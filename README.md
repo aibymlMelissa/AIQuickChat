@@ -1,74 +1,75 @@
-# AIQuickChat - AI Video Generator
+# AI QuickSpeak
 
-Transform static images into dynamic animated videos using Google's Gemini Veo AI model.
-
-![AI Video Generator](https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6)
+An interactive pitch deck for a hybrid edge-cloud AAC (Augmentative and Alternative Communication) device. Experience the vision through a fully functional web prototype powered by Google Gemini AI.
 
 ## Overview
 
-AIQuickChat is a React-based web application that brings static images to life using Google's advanced Gemini Veo AI model. Upload an image, describe your desired animation, and generate professional-quality videos in seconds.
+AI QuickSpeak is a next-generation assistive communication device designed for individuals with speech difficulties. The system combines **offline-first reliability** with **cloud-powered intelligence** to provide instant, context-aware communication support.
 
-## Features
+This repository contains a web-based interactive pitch deck that demonstrates:
+- Real-time device simulation with functional TTS
+- Interactive architecture diagrams
+- System flow visualization with data tracing
+- AI-powered context pack generation
 
-- **AI-Powered Video Generation**: Utilizes Google Gemini's Veo 3.1 Fast model for high-quality video creation
-- **Smart Prompt Suggestions**: AI-powered prompt recommendations based on uploaded images
-- **Image Upload**: Drag-and-drop support with real-time preview (up to 10MB)
-- **Multiple Aspect Ratios**: 16:9 (landscape) and 9:16 (portrait) support
-- **720p Output**: High-quality video generation at 720p resolution
-- **Google Drive Integration**: OAuth 2.0 authentication for seamless Drive uploads with shareable links
-- **Download Videos**: Save generated videos locally
-- **Real-time Progress**: Dynamic loading messages during video generation
-- **Modern UI**: Responsive design with Tailwind CSS and video backgrounds
-- **AI Studio Integration**: Seamless API key management via Google AI Studio
+## Key Features
+
+### 🎯 Core Concept
+- **Hybrid Edge-Cloud Architecture**: Critical functions run offline; intelligence syncs in background
+- **Zero-Latency Speech**: Local neural TTS ensures communication never fails
+- **Context-Aware AI**: Predictive phrase suggestions based on time, location, and usage patterns
+- **Offline First**: Full functionality without internet connectivity
+
+### 💻 Interactive Pitch Deck
+- **Live Device Simulator**: Virtual QuickSpeak device with functional TTS
+- **Cloud AI Dashboard**: Generate custom context packs using Gemini AI
+- **Architecture Diagram**: Interactive visualization of edge-cloud split
+- **System Flow Diagram**: Click-to-trace data flow from user input to audio output
+- **Technical Specifications**: Detailed component breakdown
 
 ## Tech Stack
 
-### Core Technologies
+### Frontend
 - **React** 19.2.0 - Modern UI framework
 - **TypeScript** 5.8.2 - Type-safe development
 - **Vite** 6.2.0 - Fast build tool and dev server
 - **Tailwind CSS** - Utility-first styling (via CDN)
+- **Lucide React** 0.555.0 - Icon components
 
 ### AI & APIs
-- **@google/genai** 1.29.1 - Google Generative AI SDK
-- **Gemini Veo 3.1** - Video generation model
-- **Gemini 2.5 Flash** - Prompt suggestion model
-- **Google Drive API** - File storage and sharing
-- **Google Identity Services** - OAuth 2.0 authentication
+- **@google/genai** 1.30.0 - Google Generative AI SDK
+- **Gemini 2.5 Flash** - Context pack generation (LLM)
+- **Gemini 2.5 Flash TTS** - Neural text-to-speech synthesis
+- **Web Audio API** - PCM audio decoding and playback
 
 ### Build & Development
 - **Node.js** v16+ recommended
 - **ES2022** target compilation
-- **Vercel** deployment ready
 
 ## Project Structure
 
 ```
 AIQuickChat/
-├── components/                  # React UI Components
-│   ├── ApiKeySelector.tsx       # Google AI API key selection interface
-│   ├── LoadingIndicator.tsx     # Animated loading states with dynamic messages
-│   └── VideoGeneratorForm.tsx   # Main form: upload, prompt, aspect ratio
+├── components/                     # React UI Components
+│   ├── ArchitectureDiagram.tsx     # Interactive edge-cloud architecture visualization
+│   ├── DeviceSimulator.tsx         # Virtual QuickSpeak device with TTS
+│   └── SystemFlowDiagram.tsx       # Interactive system flow with node tracing
 │
-├── services/                    # Business Logic & API Integration
-│   ├── geminiService.ts         # Gemini Veo video generation & prompt suggestions
-│   └── googleDriveService.ts    # OAuth 2.0 and Drive file upload
+├── services/                       # Business Logic & API Integration
+│   └── geminiService.ts            # Gemini AI integration (TTS + context generation)
 │
-├── utils/                       # Helper Utilities
-│   └── fileUtils.ts             # File conversion and base64 encoding
-│
-├── Public/                      # Static Assets
-│   ├── Image/                   # Sample screenshots and promotional images
-│   └── Video/                   # Sample generated video examples
-│
-├── App.tsx                      # Main application component (root)
-├── index.tsx                    # React DOM entry point
-├── index.html                   # HTML template with CDN scripts
-├── types.ts                     # Global TypeScript type definitions
-├── vite.config.ts              # Vite build configuration
-├── tsconfig.json               # TypeScript compiler configuration
-├── package.json                # Dependencies and scripts
-└── metadata.json               # App metadata for Google AI Studio
+├── App.tsx                         # Main application component
+├── index.tsx                       # React DOM entry point
+├── index.html                      # HTML template
+├── types.ts                        # TypeScript type definitions
+├── vite.config.ts                  # Vite configuration
+├── tsconfig.json                   # TypeScript compiler settings
+├── package.json                    # Dependencies and scripts
+└── metadata.json                   # App metadata
+
+Public/
+├── Image/                          # Screenshots and promotional images
+└── Video/                          # Demo videos
 ```
 
 ## Getting Started
@@ -77,7 +78,7 @@ AIQuickChat/
 
 - **Node.js** v16 or higher
 - **Google Gemini API Key** - [Get one here](https://aistudio.google.com/apikey)
-- **Modern browser** with ES2020+ support
+- **Modern browser** with Web Audio API support
 
 ### Installation
 
@@ -96,7 +97,7 @@ AIQuickChat/
 
    Create a `.env` file in the project root:
    ```env
-   GEMINI_API_KEY=your_gemini_api_key_here
+   API_KEY=your_gemini_api_key_here
    ```
 
 4. **Start the development server:**
@@ -109,229 +110,325 @@ AIQuickChat/
    http://localhost:3000
    ```
 
-## Usage Guide
+## Interactive Pitch Deck Guide
 
-### Basic Workflow
+### 1. Hero Section
+**"The Voice for Everyone. Offline First. AI Powered."**
 
-1. **API Key Selection**
-   - On first launch, the app checks for API key availability
-   - Use AI Studio's key selector or environment variable
-   - API key is validated before proceeding
+Introduces the vision and three core pillars:
+- **Open Source Core**: Built on Raspberry Pi Zero 2 W
+- **Offline Reliability**: Local neural TTS for zero-latency speech
+- **Context Aware**: AI-powered predictive phrase suggestions
 
-2. **Upload Image**
-   - Click "Choose Image" or drag and drop
-   - Supported formats: PNG, JPG, WEBP
-   - Maximum file size: 10MB
-   - Preview appears immediately after selection
+### 2. Architecture Diagram
+Interactive visualization of the hybrid edge-cloud system:
 
-3. **Get AI Prompt Suggestions** (Optional)
-   - Click "Suggest Prompts" for AI-generated animation ideas
-   - Powered by Gemini 2.5 Flash model
-   - Context-aware suggestions based on image content
+- **Click "Device (Edge)"** to see offline components:
+  - UI Application (Python/Kivy)
+  - Local SQLite database
+  - Piper neural TTS engine
+  - I2S audio hardware
 
-4. **Choose Aspect Ratio**
-   - **16:9** - Landscape/widescreen format
-   - **9:16** - Portrait/mobile format
+- **Click "Cloud (Background)"** to see cloud services:
+  - Supabase/FastAPI backend
+  - AI suggestion engine
+  - Caregiver dashboard
+  - Usage analytics
 
-5. **Write Animation Prompt**
-   - Describe desired motion and effects
-   - Example: "gentle camera pan from left to right with subtle parallax effect"
-   - Example: "slow zoom in with soft bokeh and dreamy atmosphere"
+### 3. System Flow Diagram
+**Click any node to trace the complete data flow:**
 
-6. **Generate Video**
-   - Click "Generate Video"
-   - Processing time: typically 30-120 seconds
-   - Real-time loading messages show progress
-   - Polling occurs every 5 seconds for completion
+**Device (Edge) Flow:**
+1. **User** → Taps phrase button on touchscreen
+2. **UI Application** → Queries local database for phrase text
+3. **Predictive Logic** → N-gram model adjusts button order
+4. **Local TTS Engine** → Piper converts text to PCM audio
+5. **Hardware Output** → I2S DAC drives speaker
 
-7. **Download or Share**
-   - **Download**: Save video to local device
-   - **Share to Drive**: Upload with OAuth 2.0, get shareable link
+**Cloud (Background) Flow:**
+6. **Caregiver Dashboard** → Family/doctors update phrases remotely
+7. **Cloud Backend** → Syncs config and voice packs (when online)
+8. **AI Model** → LLM analyzes usage logs to generate context packs
+
+### 4. Live Device Simulator
+
+**Try the functional prototype:**
+
+**Virtual Device Features:**
+- 3.5" touchscreen interface simulation
+- Grid of 8 phrase buttons
+- Status bar with WiFi and battery indicators
+- Real-time TTS playback
+
+**Cloud AI Dashboard:**
+1. Enter a scenario (e.g., "At the dentist", "Ordering pizza")
+2. Click "Push" to generate context-aware phrases
+3. Watch as the device updates with new suggestions
+4. Click any phrase button to hear it spoken aloud
+
+**Technical Implementation:**
+- Uses **Gemini 2.5 Flash** for context pack generation
+- Uses **Gemini 2.5 Flash TTS** with "Fenrir" voice (deep, calm tone)
+- Raw PCM audio decoded via Web Audio API
+- Fallback to browser TTS if API fails
+
+### 5. Technical Specifications
+
+Detailed hardware and software specs:
+
+| Component | Specification |
+|-----------|--------------|
+| **SBC** | Raspberry Pi Zero 2 W (Quad-core 1GHz, 512MB RAM) |
+| **Display** | 3.5" DPI IPS Touchscreen (640x480) |
+| **Audio** | I2S Mono Amp HAT + 3W High-Fidelity Speaker |
+| **OS** | DietPi Linux (Minimal footprint) |
+| **App Runtime** | Python (Kivy/PyQt) with GPU Acceleration |
+| **TTS Engine** | Piper (On-device Neural Text-to-Speech) |
+| **Connectivity** | Wi-Fi 2.4GHz (Sync Only), BLE |
+| **Backend** | FastAPI + Supabase (PostgreSQL) |
+| **AI Model** | Fine-tuned Llama 3 (Cloud) / N-gram (Local) |
 
 ## Component Architecture
 
 ### App.tsx
-**Main application component** that orchestrates the entire user experience.
+**Main application component** - orchestrates the entire pitch deck.
 
-**Key Responsibilities:**
-- API key status management
-- Video generation state handling
-- Component rendering logic
-- Video blob URL lifecycle management
+**Structure:**
+- Navigation bar with section links
+- Hero section with feature highlights
+- Architecture diagram section
+- System flow diagram section
+- Live device simulator section
+- Technical specifications table
+- Footer
+
+**Styling:**
+- Tailwind CSS utility classes
+- Custom brand colors (purple/indigo gradient)
+- Responsive design with mobile support
+- Smooth scroll behavior
+
+### ArchitectureDiagram.tsx
+**Interactive architecture visualization component.**
+
+**Features:**
+- Click to switch between "Device" and "Cloud" layers
+- Animated connection line with WiFi icon
+- Visual highlighting of active layer
+- Detailed component breakdowns
+
+**Device (Edge) Components:**
+- UI Application (Python/Kivy)
+- Local SQLite Database
+- Piper TTS Engine
+- Hardware (Speaker/Display)
+- Battery & Sensors
+
+**Cloud (Background) Components:**
+- Supabase/FastAPI Backend
+- Caregiver Web Dashboard
+- AI Suggestion Engine
+- Usage Analytics
 
 **State Management:**
-- `apiKeySelected`: Boolean for API key availability
-- `isGenerating`: Video generation status
-- `videoUrl`: Blob URL for generated video
-- `loadingMessage`: Dynamic progress messages
-- `error`: Error state handling
-- `isSharing`: Google Drive upload status
+```typescript
+const [activeLayer, setActiveLayer] = useState<'device' | 'cloud'>('device');
+```
 
-### ApiKeySelector.tsx
-**API key selection interface** for Google AI Studio integration.
+### DeviceSimulator.tsx
+**Interactive device prototype with functional TTS.**
 
-**Features:**
-- Checks `window.aistudio.hasSelectedApiKey()`
-- Opens AI Studio key selector dialog
-- Displays billing information
-- Environment variable fallback support
+**State Management:**
+```typescript
+const [phrases, setPhrases] = useState<string[]>([...]);       // Current phrase pack
+const [ttsStatus, setTtsStatus] = useState<TTSStatus>(IDLE);   // TTS playback state
+const [scenarioInput, setScenarioInput] = useState("");        // User scenario input
+const [isGeneratingPack, setIsGeneratingPack] = useState(false); // Loading state
+```
 
-**Props:**
-- `onApiKeySelected`: Callback when key is selected
-- `error`: Optional error message display
+**Key Functions:**
+- `handleSpeak(text)`: Plays TTS for selected phrase
+  - Calls `geminiService.playTTS()`
+  - Updates TTS status indicators
+  - Handles loading/playing/error states
 
-### VideoGeneratorForm.tsx
-**Main form component** for image upload and video generation.
+- `handleGeneratePack()`: Generates AI context pack
+  - Calls `geminiService.generateContextPack()`
+  - Updates phrase grid with new suggestions
+  - Shows loading spinner during generation
 
-**Features:**
-- Image upload with validation
-- Real-time image preview
-- Aspect ratio selection (16:9, 9:16)
-- Prompt textarea with suggestions
-- AI-powered prompt generation
-- Form validation and error handling
+**UI Components:**
+- **Cloud AI Dashboard**: Scenario input + "Push" button
+- **Virtual Device**:
+  - Status bar (time, WiFi, battery)
+  - 8-button phrase grid
+  - Visual feedback on TTS playback
+  - Physical button details (power, volume)
 
-**State:**
-- `file`: Uploaded image file
-- `preview`: Base64 preview URL
-- `prompt`: User-provided animation description
-- `aspectRatio`: Selected video format
-- `suggestions`: AI-generated prompt ideas
-- `isLoadingSuggestions`: Suggestion loading state
+### SystemFlowDiagram.tsx
+**Interactive system flow visualization with click-to-trace.**
 
-### LoadingIndicator.tsx
-**Progress display component** during video generation.
+**Node Configuration:**
+```typescript
+type NodeId = 'user' | 'ui' | 'db' | 'logic' | 'tts' | 'hw' | 'cloud' | 'caregiver' | 'ai';
 
-**Features:**
-- Animated spinner
-- Dynamic loading messages
-- User-friendly waiting state
-- Smooth transitions
+const nodeConfig: Record<NodeId, NodeData> = {
+  user: { label: 'User', connections: ['ui'], ... },
+  ui: { label: 'UI Application', connections: ['user', 'db', 'logic', 'tts', 'cloud'], ... },
+  // ... 9 nodes total
+};
+```
 
-**Props:**
-- `message`: Current loading message text
+**Interactive Features:**
+- Click any node to highlight it
+- Connected nodes light up automatically
+- Disconnected nodes fade to gray
+- Animated connection lines pulse when active
+- Tooltips display detailed descriptions
+- "Reset View" button to clear selection
+
+**Visual Effects:**
+- Ring highlights on selected nodes
+- Scale transformations on hover/select
+- Color transitions for connection states
+- Animated arrows for data flow
+- Blur/grayscale for inactive nodes
+
+**Layout:**
+- **Column 1**: User input layer
+- **Column 2**: Device (Edge) - 6 nodes in vertical flow
+- **Column 3**: Cloud (Background) - 3 nodes in vertical stack
 
 ## Service Layer
 
 ### geminiService.ts
-**Core AI integration service** for video generation.
+**Core AI integration service for TTS and context generation.**
 
-#### `generateVideo()`
-Generates video from image and prompt using Gemini Veo model.
-
-**Parameters:**
-- `apiKey`: Google Gemini API key
-- `imageData`: Base64-encoded image with MIME type
-- `prompt`: Animation description
-- `aspectRatio`: Video format (16:9 or 9:16)
-- `setLoadingMessage`: Callback for progress updates
-
-**Process:**
-1. Initialize Gemini client with API key
-2. Upload image and prompt to Veo 3.1 Fast model
-3. Poll every 5 seconds for completion
-4. Update loading messages dynamically
-5. Return blob URL for video playback
-
-**Model Configuration:**
-- Model: `veo-3.1-fast-generate-preview`
-- Resolution: 720p
-- Polling interval: 5 seconds
-
-#### `suggestPrompts()`
-Generates AI-powered prompt suggestions based on uploaded image.
+#### `generateContextPack(scenario: string): Promise<string[]>`
+Generates AI-powered phrase suggestions for specific scenarios.
 
 **Parameters:**
-- `apiKey`: Google Gemini API key
-- `imageData`: Base64-encoded image with MIME type
+- `scenario`: Context description (e.g., "At the hospital", "Grocery shopping")
 
 **Process:**
-1. Analyzes image content with Gemini 2.5 Flash
-2. Generates contextually relevant animation ideas
-3. Returns structured JSON with prompt suggestions
+1. Calls Gemini 2.5 Flash model
+2. Generates 6 short phrases (max 5 words each)
+3. Returns structured JSON array
+4. Falls back to default phrases on error
 
 **Model Configuration:**
-- Model: `gemini-2.5-flash`
-- Output: Structured JSON format
-- Context: Image analysis for relevant suggestions
-
-### googleDriveService.ts
-**Google Drive integration service** for OAuth and file uploads.
-
-#### `uploadToDrive()`
-Uploads video blob to Google Drive with OAuth 2.0.
-
-**Process:**
-1. Requests OAuth token via Google Identity Services
-2. Fetches blob data from URL
-3. Creates multipart form data
-4. Uploads to Drive API v3
-5. Sets file permissions (anyone with link)
-6. Returns shareable webViewLink
-
-**Configuration:**
-- Client ID: Configured in app
-- Scope: `https://www.googleapis.com/auth/drive.file`
-- Permissions: Editable by anyone with link
-
-### fileUtils.ts
-**File handling utilities** for image processing.
-
-#### `fileToGenerativePart()`
-Converts File object to base64 format for Gemini API.
-
-**Process:**
-1. Reads file as ArrayBuffer
-2. Converts to base64 encoding
-3. Extracts MIME type
-4. Returns structured object
-
-**Return Format:**
 ```typescript
-{
-  data: string;      // base64-encoded file
-  mimeType: string;  // e.g., "image/jpeg"
+model: "gemini-2.5-flash"
+responseMimeType: "application/json"
+responseSchema: Type.ARRAY of Type.STRING
+```
+
+**Example Output:**
+```json
+[
+  "I need water",
+  "Yes please",
+  "No thank you",
+  "Call nurse",
+  "Pain level 5",
+  "Bathroom please"
+]
+```
+
+#### `playTTS(text: string): Promise<void>`
+Converts text to speech using Gemini TTS API.
+
+**Process:**
+1. Calls Gemini 2.5 Flash TTS model
+2. Receives base64-encoded PCM audio data
+3. Decodes audio bytes from base64
+4. Creates AudioBuffer from raw PCM (24kHz, mono, 16-bit)
+5. Plays through Web Audio API
+6. Falls back to browser TTS on error
+
+**Model Configuration:**
+```typescript
+model: "gemini-2.5-flash-preview-tts"
+responseModalities: [Modality.AUDIO]
+speechConfig: {
+  voiceConfig: {
+    prebuiltVoiceConfig: { voiceName: 'Fenrir' }
+  }
+}
+```
+
+**Audio Specifications:**
+- Sample Rate: 24kHz
+- Channels: 1 (mono)
+- Format: Raw PCM 16-bit signed integer
+- Encoding: Base64 in API response
+
+**Helper Functions:**
+- `decode(base64)`: Converts base64 string to Uint8Array
+- `decodeAudioData()`: Converts raw PCM to AudioBuffer
+  - Normalizes Int16 to Float32 [-1.0, 1.0]
+  - Creates Web Audio API compatible buffer
+
+## Types & Interfaces
+
+### types.ts
+**TypeScript type definitions for the application.**
+
+```typescript
+// Context pack structure
+export interface ContextPack {
+  name: string;
+  phrases: string[];
+}
+
+// Device state (unused in pitch deck, but prepared for full app)
+export interface DeviceState {
+  batteryLevel: number;
+  isOnline: boolean;
+  currentPack: ContextPack;
+}
+
+// TTS playback status enum
+export enum TTSStatus {
+  IDLE = 'IDLE',         // Not playing
+  LOADING = 'LOADING',   // Fetching audio
+  PLAYING = 'PLAYING',   // Audio playback active
+  ERROR = 'ERROR'        // TTS failed
 }
 ```
 
 ## Configuration Files
 
 ### vite.config.ts
-**Vite build tool configuration**
-
 ```typescript
-{
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [react()],
   server: {
     port: 3000,
     host: '0.0.0.0'
   },
   define: {
-    'process.env.GEMINI_API_KEY': JSON.stringify(process.env.GEMINI_API_KEY)
+    'process.env.API_KEY': JSON.stringify(process.env.API_KEY)
   }
-}
+});
 ```
 
 ### tsconfig.json
-**TypeScript compiler configuration**
-
 ```json
 {
   "compilerOptions": {
     "target": "ES2022",
     "module": "ESNext",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "jsx": "react-jsx",
-    "paths": { "@/*": ["./*"] }
+    "strict": true,
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "skipLibCheck": true
   }
-}
-```
-
-### metadata.json
-**Google AI Studio app metadata**
-
-```json
-{
-  "name": "AI Video Generator",
-  "description": "Uses Gemini's Veo model for video generation"
 }
 ```
 
@@ -354,43 +451,21 @@ Create a `.env` file in the project root:
 
 ```env
 # Required: Google Gemini API Key
-GEMINI_API_KEY=your_gemini_api_key_here
-
-# Optional: Can be set via AI Studio interface instead
+API_KEY=your_gemini_api_key_here
 ```
 
-## Deployment
-
-### Google AI Studio
-This app is optimized for [Google AI Studio](https://ai.studio/). The metadata.json and window.aistudio integration provide seamless deployment.
-
-### Vercel
-Already configured with `.vercel/project.json`:
-```bash
-vercel --prod
-```
-
-### Other Platforms
-Compatible with any static hosting service:
-- Netlify
-- GitHub Pages
-- Cloudflare Pages
-- AWS S3 + CloudFront
-
-**Build command:** `npm run build`
-**Output directory:** `dist/`
+**Note:** The variable is called `API_KEY` (not `GEMINI_API_KEY`) as referenced in geminiService.ts:4
 
 ## Browser Compatibility
 
 ### Required Features
 - ES2022+ JavaScript
-- File API
-- Blob API
-- URL.createObjectURL()
-- Video playback (H.264/VP9)
-- OAuth 2.0 popup flow
-- Async/Await
+- Web Audio API
+- AudioContext.createBuffer()
+- Base64 decoding (atob)
 - Fetch API
+- CSS Grid & Flexbox
+- CSS Transitions & Animations
 
 ### Recommended Browsers
 - Chrome 90+
@@ -401,19 +476,36 @@ Compatible with any static hosting service:
 ## API Limits & Considerations
 
 ### Gemini API Quotas
-- Video generation may have rate limits
+- TTS generation may have rate limits
+- Context pack generation uses text model (cheaper)
 - Check your [API quota](https://aistudio.google.com/apikey) regularly
-- Free tier has usage restrictions
+- Free tier has daily request limits
 
-### File Size Limits
-- Image upload: 10MB maximum
-- Supported formats: PNG, JPG, WEBP
-- Generated video size varies by length and quality
+### Audio Processing
+- TTS sample rate: 24kHz
+- Audio format: Raw PCM 16-bit
+- No MP3/WAV encoding (reduces latency)
+- Fallback to browser TTS if quota exceeded
 
-### Video Generation Time
-- Typical processing: 30-120 seconds
-- Depends on prompt complexity and server load
-- Polling interval: 5 seconds
+## Deployment
+
+### Vercel (Recommended)
+```bash
+npm run build
+vercel --prod
+```
+
+### Other Static Hosting
+Compatible with:
+- Netlify
+- GitHub Pages
+- Cloudflare Pages
+- AWS S3 + CloudFront
+
+**Build command:** `npm run build`
+**Output directory:** `dist/`
+
+**Important:** Set `API_KEY` environment variable in your hosting platform.
 
 ## Troubleshooting
 
@@ -421,35 +513,95 @@ Compatible with any static hosting service:
 ```
 Error: API key not found
 ```
-**Solution:** Ensure `.env` file exists with valid `GEMINI_API_KEY` or use AI Studio key selector.
+**Solution:** Ensure `.env` file exists with valid `API_KEY` (not `GEMINI_API_KEY`).
 
-### Image Upload Fails
+### TTS Playback Fails
 ```
-Error: File too large
+TTS Error: No audio data received
 ```
-**Solution:** Compress image to under 10MB or use a different image.
+**Solution:**
+- Check API quota at aistudio.google.com
+- Browser automatically falls back to Web Speech API
+- Verify browser supports Web Audio API
 
-### Video Generation Timeout
+### Context Pack Generation Timeout
 ```
-Error: Generation timed out
+Error generating context pack
 ```
-**Solution:** Try a simpler prompt or retry. Check API quota status.
+**Solution:**
+- Check internet connectivity
+- Verify API key is valid
+- Falls back to default phrases automatically
 
-### Google Drive Upload Fails
-```
-Error: OAuth failed
-```
-**Solution:** Enable popups for the site and ensure you're signed into Google account.
+## Project Vision
+
+### The Problem
+Existing AAC devices are:
+- Expensive ($3000-8000)
+- Cloud-dependent (fail without internet)
+- Slow to respond (network latency)
+- Not context-aware (static phrase lists)
+
+### The Solution: AI QuickSpeak
+- **Affordable**: $200-300 target cost (Raspberry Pi)
+- **Offline First**: Local TTS and database
+- **Instant**: Zero-latency speech generation
+- **Intelligent**: AI learns from usage patterns
+- **Open Source**: Hackable and customizable
+
+### Target Users
+- Individuals with ALS, cerebral palsy, stroke recovery
+- Non-verbal children with autism
+- Post-surgery patients (temporary speech loss)
+- Elderly with speech difficulties
+
+### Development Timeline
+- **MVP**: 3 months
+  - Core offline functionality
+  - Basic local TTS (Piper)
+  - SQLite database
+  - Simple grid UI
+
+- **Phase 2**: +3 months
+  - Cloud sync backend (Supabase)
+  - Caregiver dashboard
+  - Basic prediction (N-gram)
+
+- **Phase 3**: +6 months
+  - AI-powered context packs (LLM)
+  - Advanced predictive UI
+  - Voice customization
+  - BLE accessories
+
+## Technical Highlights
+
+### Why Raspberry Pi Zero 2 W?
+- Quad-core 1GHz CPU (sufficient for Piper TTS)
+- 512MB RAM (tight but manageable with DietPi)
+- Built-in Wi-Fi for background sync
+- Low power consumption (~500mA)
+- **Cost: $15** (vs $200+ for alternatives)
+
+### Why Piper TTS?
+- Open-source neural TTS
+- Runs on CPU (no GPU needed)
+- 150-300ms latency (acceptable)
+- 22kHz quality output
+- Customizable voices
+- **Offline capable**
+
+### Why Hybrid Architecture?
+- **Critical Path**: User tap → Speech (100% offline, <500ms)
+- **Background Path**: AI suggestions sync when available
+- Best of both worlds: reliability + intelligence
 
 ## Contributing
 
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+This is a pitch deck project, but contributions are welcome for:
+- UI/UX improvements
+- Additional interactive visualizations
+- Performance optimizations
+- Documentation enhancements
 
 ## License
 
@@ -457,18 +609,20 @@ This project is open source and available under the MIT License.
 
 ## Acknowledgments
 
-- **Google Gemini Veo** - Advanced video generation AI model
-- **Google AI Studio** - Development and deployment platform
-- **React** - UI framework by Meta
-- **Vite** - Next-generation build tool
-- **Tailwind CSS** - Utility-first CSS framework
+- **Google Gemini** - AI-powered TTS and context generation
+- **Piper TTS** - Open-source neural text-to-speech engine
+- **React** - UI framework
+- **Vite** - Build tool
+- **Lucide** - Icon library
+- **Tailwind CSS** - Styling framework
 
-## Support
+## Contact
 
-- **Issues**: [GitHub Issues](https://github.com/aibymlMelissa/AIQuickChat/issues)
+- **GitHub Issues**: [Report bugs or suggest features](https://github.com/aibymlMelissa/AIQuickChat/issues)
 - **Email**: aibyml.com@gmail.com
-- **Documentation**: [Google Gemini API Docs](https://ai.google.dev/)
 
 ---
 
-Built with ❤️ using Google Gemini AI
+**This is an interactive pitch deck.** The actual hardware device is under development. This web prototype demonstrates the vision, architecture, and AI capabilities of the planned system.
+
+Built with ❤️ for the AAC community.
