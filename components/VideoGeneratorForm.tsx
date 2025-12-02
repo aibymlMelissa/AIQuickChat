@@ -169,7 +169,7 @@ export const VideoGeneratorForm: React.FC<VideoGeneratorFormProps> = ({ onGenera
         disabled={isGenerating || !imageFile || isSuggesting}
         className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-cyan-500 disabled:bg-slate-500 disabled:cursor-not-allowed transition-colors"
       >
-        {isGenerating ? 'Animating...' : 'Animate Memory'}
+        {isGenerating ? 'Generating Your Video...' : 'Animate Memory or Generate Your Video'}
       </button>
     </form>
   );

@@ -155,11 +155,11 @@ const App: React.FC = () => {
       
       <main className="relative z-20 flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
         <div className="w-full max-w-4xl text-center mb-8">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white">
-            AI Memory Animator
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white">
+            Video Generator - Memory Animator
           </h1>
           <p className="mt-4 text-lg sm:text-xl text-slate-300">
-            Bring your cherished memories to life. Turn a static photo into a beautiful, animated memory.
+            Bring cherished memories to life. Turn static photos into a beautiful, animated memory video.
           </p>
         </div>
 
