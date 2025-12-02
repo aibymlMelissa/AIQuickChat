@@ -1,227 +1,148 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { GoogleGenAI } from '@google/genai';
-import { ApiKeySelector } from './components/ApiKeySelector';
-import { VideoGeneratorForm } from './components/VideoGeneratorForm';
-import { LoadingIndicator } from './components/LoadingIndicator';
-import { generateVideo } from './services/geminiService';
-import { shareVideoToDrive } from './services/googleDriveService';
-import type { AspectRatio } from './types';
-
-// Extend the Window interface to include the aistudio object and Google Identity Services
-declare global {
-  // FIX: The original anonymous type for `aistudio` conflicted with another declaration.
-  // Defining a named `AIStudio` interface resolves this type conflict.
-  interface AIStudio {
-    hasSelectedApiKey: () => Promise<boolean>;
-    openSelectKey: () => Promise<void>;
-  }
-  interface Window {
-    aistudio?: AIStudio;
-    google?: {
-      accounts: {
-        oauth2: {
-          initTokenClient: (config: {
-            client_id: string;
-            scope: string;
-            callback: (tokenResponse: { access_token: string; error?: string; error_description?: string }) => void;
-          }) => {
-            requestAccessToken: () => void;
-          };
-        };
-      };
-    };
-  }
-}
+import React from 'react';
+import { Bot, Terminal, ShieldCheck, Zap } from 'lucide-react';
+import ArchitectureDiagram from './components/ArchitectureDiagram';
+import DeviceSimulator from './components/DeviceSimulator';
+import SystemFlowDiagram from './components/SystemFlowDiagram';
 
 const App: React.FC = () => {
-  const [apiKeySelected, setApiKeySelected] = useState<boolean>(false);
-  const [isCheckingApiKey, setIsCheckingApiKey] = useState<boolean>(true);
-  const [videoUrl, setVideoUrl] = useState<string | null>(null);
-  const [isGenerating, setIsGenerating] = useState<boolean>(false);
-  const [loadingMessage, setLoadingMessage] = useState<string>('');
-  const [error, setError] = useState<string | null>(null);
-  const [isSharing, setIsSharing] = useState<boolean>(false);
-  const [shareUrl, setShareUrl] = useState<string | null>(null);
-  const [shareError, setShareError] = useState<string | null>(null);
-
-  const checkApiKey = useCallback(async () => {
-    setIsCheckingApiKey(true);
-    if (window.aistudio) {
-      const hasKey = await window.aistudio.hasSelectedApiKey();
-      setApiKeySelected(hasKey);
-    } else {
-      // If aistudio is not available, assume we are in a different environment
-      // and a key might be set via process.env. For this app, we'll hide the selector.
-      setApiKeySelected(true); 
-    }
-    setIsCheckingApiKey(false);
-  }, []);
-
-  useEffect(() => {
-    checkApiKey();
-  }, [checkApiKey]);
-
-  // Clean up the object URL when the component unmounts or the URL changes to prevent memory leaks
-  useEffect(() => {
-    return () => {
-      if (videoUrl) {
-        URL.revokeObjectURL(videoUrl);
-      }
-    };
-  }, [videoUrl]);
-
-
-  const handleApiKeySelected = () => {
-    setApiKeySelected(true);
-  };
-  
-  const handleGenerationStart = () => {
-    setIsGenerating(true);
-    // Setting videoUrl to null will trigger the useEffect cleanup for the old URL
-    setVideoUrl(null);
-    setError(null);
-    setShareUrl(null); // Reset share URL on new generation
-    setShareError(null); // Reset share error
-  };
-
-  const handleGeneration = async (image: { data: string; mimeType: string }, prompt: string, aspectRatio: AspectRatio) => {
-    handleGenerationStart();
-    try {
-        const url = await generateVideo(image, prompt, aspectRatio, setLoadingMessage);
-        setVideoUrl(url);
-    } catch (e) {
-        const err = e as Error;
-        console.error(err);
-        if (err.message.includes("Requested entity was not found")) {
-            setError("API Key validation failed. Please select a valid API key.");
-            setApiKeySelected(false); // Force re-selection
-        } else {
-            setError(`An error occurred during video generation: ${err.message}`);
-        }
-    } finally {
-        setIsGenerating(false);
-    }
-  };
-
-  const handleDownload = () => {
-    if (!videoUrl) return;
-    const a = document.createElement('a');
-    a.href = videoUrl;
-    a.download = 'ai-memory.mp4';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  };
-
-  const handleShare = async () => {
-    if (!videoUrl) return;
-    setIsSharing(true);
-    setShareUrl(null);
-    setShareError(null);
-    try {
-      const url = await shareVideoToDrive(videoUrl);
-      setShareUrl(url);
-    } catch (e) {
-      setShareError((e as Error).message);
-    } finally {
-      setIsSharing(false);
-    }
-  };
-
-  const renderContent = () => {
-    if (isCheckingApiKey) {
-      return <div className="text-white">Checking API Key status...</div>;
-    }
-    if (!apiKeySelected) {
-      return <ApiKeySelector onApiKeySelected={handleApiKeySelected} error={error} />;
-    }
-    return <VideoGeneratorForm onGenerate={handleGeneration} isGenerating={isGenerating} />;
-  };
-
   return (
-    <div className="relative min-h-screen w-full bg-slate-900 text-white overflow-hidden">
-      {videoUrl && (
-        <video
-          key={videoUrl}
-          className="absolute top-0 left-0 w-full h-full object-cover z-0"
-          src={videoUrl}
-          autoPlay
-          loop
-          muted
-          playsInline
-        />
-      )}
-      <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-60 z-10"></div>
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-20">
       
-      <main className="relative z-20 flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
-        <div className="w-full max-w-4xl text-center mb-8">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white">
-            Video Generator - Memory Animator
+      {/* Navbar */}
+      <nav className="fixed top-0 w-full bg-white/90 backdrop-blur-md border-b border-slate-200 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="bg-brand-500 p-1.5 rounded-lg text-white">
+              <Zap size={20} fill="currentColor" />
+            </div>
+            <span className="font-bold text-xl tracking-tight text-slate-900">AI QuickSpeak</span>
+          </div>
+          <div className="hidden md:flex gap-6 text-sm font-medium text-slate-600">
+            <a href="#vision" className="hover:text-brand-600 transition-colors">Vision</a>
+            <a href="#architecture" className="hover:text-brand-600 transition-colors">Architecture</a>
+            <a href="#demo" className="hover:text-brand-600 transition-colors">Demo</a>
+            <a href="#specs" className="hover:text-brand-600 transition-colors">Specs</a>
+          </div>
+          <a href="#flow" className="bg-slate-900 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-slate-800 transition-colors shadow-lg shadow-brand-500/20">
+            System Flow Diagram
+          </a>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section id="vision" className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 text-brand-600 text-sm font-medium border border-brand-100 mb-6">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-500"></span>
+            </span>
+            MVP Timeline: 3 Months
+          </div>
+          <h1 className="text-5xl sm:text-6xl font-extrabold tracking-tight text-slate-900 mb-6 leading-tight">
+            The Voice for <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-indigo-600">Everyone</span>.
+            <br/>Offline First. AI Powered.
           </h1>
-          <p className="mt-4 text-lg sm:text-xl text-slate-300">
-            Bring cherished memories to life. Turn static photos into a beautiful, animated memory video.
+          <p className="text-xl text-slate-600 mb-8 leading-relaxed">
+            A hybrid edge-cloud AAC device designed for reliability and intelligence. Instant local speech generation meets cloud-based predictive AI.
           </p>
         </div>
-
-        <div className="w-full max-w-2xl bg-slate-800/50 backdrop-blur-sm p-6 sm:p-8 rounded-2xl shadow-2xl border border-slate-700">
-          {isGenerating ? <LoadingIndicator message={loadingMessage} /> : renderContent()}
-        </div>
-
-        {videoUrl && !isGenerating && (
-          <div className="mt-8 flex flex-col items-center space-y-4">
-            <div className="flex flex-wrap justify-center gap-4">
-              <button
-                onClick={handleDownload}
-                className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-green-500 flex items-center space-x-2 shadow-lg"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
-                </svg>
-                <span>Download Memory</span>
-              </button>
-              <button
-                onClick={handleShare}
-                disabled={isSharing}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-blue-500 flex items-center space-x-2 shadow-lg disabled:bg-slate-500 disabled:cursor-not-allowed"
-              >
-                {isSharing ? (
-                    <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                      <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
-                    </svg>
-                )}
-                <span>{isSharing ? 'Sharing...' : 'Share to Drive'}</span>
-              </button>
+        
+        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          {[
+            { 
+              icon: <Terminal className="w-6 h-6 text-indigo-500" />, 
+              title: "Open Source Core", 
+              desc: "Built on Raspberry Pi Zero 2 W & Python for rapid iteration and low cost." 
+            },
+            { 
+              icon: <ShieldCheck className="w-6 h-6 text-emerald-500" />, 
+              title: "Offline Reliability", 
+              desc: "Zero-latency local neural TTS ensures communication never fails." 
+            },
+            { 
+              icon: <Bot className="w-6 h-6 text-brand-500" />, 
+              title: "Context Aware", 
+              desc: "AI suggests relevant phrases based on location, time, and usage history." 
+            }
+          ].map((feature, i) => (
+            <div key={i} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+              <div className="bg-slate-50 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
+                {feature.icon}
+              </div>
+              <h3 className="font-bold text-lg text-slate-900 mb-2">{feature.title}</h3>
+              <p className="text-slate-600 leading-relaxed">{feature.desc}</p>
             </div>
-            
-            {shareUrl && (
-              <div className="mt-4 p-3 w-full max-w-md bg-green-900/50 rounded-lg text-center">
-                <p className="text-green-300">Share successful! Link:</p>
-                <a href={shareUrl} target="_blank" rel="noopener noreferrer" className="text-cyan-300 hover:text-cyan-200 break-all underline">
-                  {shareUrl}
-                </a>
-              </div>
-            )}
-            
-            {shareError && (
-              <div className="mt-4 p-3 w-full max-w-md bg-red-900/50 rounded-lg text-center text-red-400">
-                <p>{shareError}</p>
-              </div>
-            )}
+          ))}
+        </div>
+      </section>
 
+      {/* Architecture Interactive Diagram */}
+      <section id="architecture" className="py-20 bg-slate-100/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ArchitectureDiagram />
+        </div>
+      </section>
+
+      {/* System Flow Diagram (New Section) */}
+      <section id="flow" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+           <SystemFlowDiagram />
+        </div>
+      </section>
+
+      {/* Live Demo Section */}
+      <section id="demo" className="py-24 bg-slate-50 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(#e0f2fe_1px,transparent_1px)] [background-size:16px_16px] opacity-30"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-slate-900 mb-4">Experience the Prototype</h2>
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+              Interact with the virtual QuickSpeak device. Test the cloud-to-device synchronization by pushing new context packs using the AI dashboard.
+            </p>
           </div>
-        )}
+          <DeviceSimulator />
+        </div>
+      </section>
 
-        {error && !isGenerating && !apiKeySelected && (
-           <div className="mt-4 text-center text-red-400 font-semibold p-3 bg-red-900/50 rounded-lg">
-             {error}
-           </div>
-        )}
-      </main>
+      {/* Technical Specs Table */}
+      <section id="specs" className="py-20 bg-slate-900 text-slate-300">
+        <div className="max-w-4xl mx-auto px-6">
+          <h2 className="text-3xl font-bold text-yellow-400 mb-10 text-center">Technical Specifications</h2>
+          <div className="overflow-hidden rounded-xl border border-slate-700 bg-slate-800/50 backdrop-blur">
+            <table className="w-full text-left text-sm">
+              <thead className="bg-slate-800 text-yellow-500">
+                <tr>
+                  <th className="px-6 py-4 font-semibold uppercase tracking-wider">Component</th>
+                  <th className="px-6 py-4 font-semibold uppercase tracking-wider">Specification</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-700">
+                {[
+                  ["SBC", "Raspberry Pi Zero 2 W (Quad-core 1GHz, 512MB RAM)"],
+                  ["Display", "3.5\" DPI IPS Touchscreen (640x480)"],
+                  ["Audio", "I2S Mono Amp HAT + 3W High-Fidelity Speaker"],
+                  ["OS", "DietPi Linux (Minimal footprint)"],
+                  ["App Runtime", "Python (Kivy/PyQt) with GPU Acceleration"],
+                  ["TTS Engine", "Piper (On-device Neural Text-to-Speech)"],
+                  ["Connectivity", "Wi-Fi 2.4GHz (Sync Only), BLE"],
+                  ["Backend", "FastAPI + Supabase (PostgreSQL)"],
+                  ["AI Model", "Fine-tuned Llama 3 (Cloud) / N-gram (Local)"],
+                ].map(([comp, spec], i) => (
+                  <tr key={i} className="hover:bg-slate-700/50 transition-colors">
+                    <td className="px-6 py-4 font-medium text-yellow-400">{comp}</td>
+                    <td className="px-6 py-4 text-yellow-200">{spec}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <footer className="bg-slate-950 text-slate-500 py-12 text-center text-sm">
+        <p>&copy; 2024 AI QuickSpeak Project. Confidential Proposal.</p>
+      </footer>
     </div>
   );
 };
