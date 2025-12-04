@@ -15,7 +15,7 @@ const App: React.FC = () => {
             <div className="bg-brand-500 p-1.5 rounded-lg text-white">
               <Zap size={20} fill="currentColor" />
             </div>
-            <span className="font-bold text-xl tracking-tight text-slate-900">AI QuickSpeak</span>
+            <span className="font-bold text-xl tracking-tight text-slate-900">AI Quick Chat</span>
           </div>
           <div className="hidden md:flex gap-6 text-sm font-medium text-slate-600">
             <a href="#vision" className="hover:text-brand-600 transition-colors">Vision</a>
