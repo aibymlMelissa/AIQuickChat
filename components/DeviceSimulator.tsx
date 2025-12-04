@@ -95,7 +95,7 @@ const DeviceSimulator: React.FC = () => {
             <div className="flex-1 bg-slate-50 flex flex-col p-4">
               {/* Header */}
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-lg font-bold text-slate-800">QuickSpeak</h2>
+                <h2 className="text-lg font-bold text-slate-800">QuickChat</h2>
                 <div className={`w-3 h-3 rounded-full ${ttsStatus === TTSStatus.PLAYING ? 'bg-green-500 animate-pulse' : 'bg-slate-300'}`}></div>
               </div>
 
