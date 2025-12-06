@@ -152,20 +152,9 @@ const SystemFlowDiagram: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto p-8 bg-white rounded-2xl shadow-xl border border-slate-200 select-none relative overflow-hidden">
-      {/* Video Background */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        className="absolute inset-0 w-full h-full object-cover opacity-30 pointer-events-none"
-      >
-        <source src="/Public/Video/AQuickChat_2.mp4" type="video/mp4" />
-      </video>
-
-      {/* Content overlay */}
-      <div className="relative z-10">
+    <div className="w-full max-w-6xl mx-auto p-8 bg-white rounded-2xl shadow-xl border border-slate-200 select-none relative">
+      {/* Content */}
+      <div>
         <div className="text-center mb-10 min-h-[100px] flex flex-col justify-center items-center">
           <h2 className="text-3xl font-bold text-slate-900 mb-2">System Flow Diagram</h2>
           <p className="text-slate-600 mb-2">Click any node to trace the data flow.</p>

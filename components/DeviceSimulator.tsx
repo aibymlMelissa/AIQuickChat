@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Volume2, Battery, Wifi, Settings, Mic, Loader2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Volume2, Battery, Wifi, Settings, Mic, Loader2, Keyboard, X, Sparkles } from 'lucide-react';
 import { playTTS, generateContextPack } from '../services/geminiService';
 import { TTSStatus } from '../types';
 
@@ -8,6 +8,11 @@ const DeviceSimulator: React.FC = () => {
   const [ttsStatus, setTtsStatus] = useState<TTSStatus>(TTSStatus.IDLE);
   const [scenarioInput, setScenarioInput] = useState("");
   const [isGeneratingPack, setIsGeneratingPack] = useState(false);
+  const [showKeyboard, setShowKeyboard] = useState(false);
+  const [customText, setCustomText] = useState("");
+  const [suggestedChoices, setSuggestedChoices] = useState<string[]>([]);
+  const [isGeneratingSuggestions, setIsGeneratingSuggestions] = useState(false);
+  const [useCloudAI, setUseCloudAI] = useState(false);
 
   const handleSpeak = async (text: string) => {
     if (ttsStatus === TTSStatus.LOADING || ttsStatus === TTSStatus.PLAYING) return;
@@ -32,6 +37,101 @@ const DeviceSimulator: React.FC = () => {
     setIsGeneratingPack(false);
   };
 
+  const handleSpeakCustomText = async () => {
+    if (!customText.trim()) return;
+
+    // Speak the custom text
+    await handleSpeak(customText);
+
+    // Generate new context pack based on what was just said
+    setIsGeneratingPack(true);
+    const contextPrompt = `User just said: "${customText}". Generate 6-8 relevant follow-up dialogue choices for continuing this conversation.`;
+    const newPhrases = await generateContextPack(contextPrompt);
+    setPhrases(newPhrases.slice(0, 8)); // Update main grid with 6-8 cards
+    setIsGeneratingPack(false);
+
+    // Clear and close keyboard
+    setCustomText("");
+    setSuggestedChoices([]);
+    setShowKeyboard(false);
+  };
+
+  // Detect if query needs Cloud AI (complex, medical, or conversational)
+  const needsCloudAI = (text: string): boolean => {
+    const complexPatterns = [
+      /side effect/i,
+      /what (?:is|are)/i,
+      /how (?:do|does|can|should)/i,
+      /why/i,
+      /explain/i,
+      /tell me about/i,
+      /drug/i,
+      /medication/i,
+      /privately/i,
+      /talk about/i,
+      /discuss/i,
+      /advice/i,
+      /recommend/i,
+    ];
+    return complexPatterns.some(pattern => pattern.test(text));
+  };
+
+  // Generate dialogue suggestions based on input
+  useEffect(() => {
+    const generateSuggestions = async () => {
+      if (!customText.trim() || customText.length < 3) {
+        setSuggestedChoices([]);
+        setUseCloudAI(false);
+        return;
+      }
+
+      const isComplex = needsCloudAI(customText);
+      setUseCloudAI(isComplex);
+
+      if (isComplex) {
+        // For complex queries, suggest Cloud AI routing
+        setIsGeneratingSuggestions(true);
+        try {
+          const aiSuggestions = await generateContextPack(`Patient query: "${customText}". Generate 4 relevant follow-up questions or clarifications.`);
+          setSuggestedChoices(aiSuggestions.slice(0, 4));
+        } catch (error) {
+          setSuggestedChoices([
+            "Can you tell me more?",
+            "I need help with this",
+            "Let me speak to someone",
+            "I have a question"
+          ]);
+        }
+        setIsGeneratingSuggestions(false);
+      } else {
+        // For simple queries, show local quick responses
+        const localSuggestions: { [key: string]: string[] } = {
+          "water": ["I need water", "Can I have water?", "I'm thirsty", "Water please"],
+          "pain": ["I have pain", "It hurts", "Pain level 5", "I need pain relief"],
+          "bathroom": ["I need bathroom", "Help me to bathroom", "Bathroom please", "I need to use toilet"],
+          "help": ["I need help", "Can you help me?", "Help please", "I need assistance"],
+          "nurse": ["Call the nurse", "I need the nurse", "Where is the nurse?", "Nurse please"],
+          "tired": ["I'm tired", "I need rest", "I want to sleep", "Feeling sleepy"],
+          "thank": ["Thank you", "Thanks", "I appreciate it", "Thank you very much"],
+        };
+
+        const matchedSuggestions: string[] = [];
+        const lowerText = customText.toLowerCase();
+
+        Object.keys(localSuggestions).forEach(keyword => {
+          if (lowerText.includes(keyword)) {
+            matchedSuggestions.push(...localSuggestions[keyword]);
+          }
+        });
+
+        setSuggestedChoices(matchedSuggestions.slice(0, 4));
+      }
+    };
+
+    const debounceTimer = setTimeout(generateSuggestions, 500);
+    return () => clearTimeout(debounceTimer);
+  }, [customText]);
+
   return (
     <div className="flex flex-col lg:flex-row gap-12 items-center justify-center p-4">
       
@@ -45,14 +145,14 @@ const DeviceSimulator: React.FC = () => {
             <h3 className="text-xl font-bold text-slate-800">Cloud AI Dashboard</h3>
           </div>
           <p className="text-sm text-slate-600 mb-4">
-            Simulate the "AI Suggestion Engine". Type a context (e.g., "At the dentist", "Ordering Pizza") to push a new Context Pack to the device.
+            Simulate the "AI Suggestion Engine". Type a complicated context (e.g., "What are the side-effect of this drug", "Can I talk with you privately about the nurse taking care of me") to push a new Context Pack to the device, through Cloud AI. The simulation takes a bit longer to respond because of network latency.
           </p>
           <div className="flex gap-2">
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={scenarioInput}
               onChange={(e) => setScenarioInput(e.target.value)}
-              placeholder="e.g. Post-surgery recovery..."
+              placeholder="e.g. What are the side effects of aspirin..."
               className="flex-1 px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-purple-500 focus:outline-none"
               onKeyDown={(e) => e.key === 'Enter' && handleGeneratePack()}
             />
@@ -117,11 +217,102 @@ const DeviceSimulator: React.FC = () => {
 
               {/* Bottom Nav */}
               <div className="mt-4 pt-4 border-t border-slate-200 flex justify-around text-slate-400">
-                <div className="flex flex-col items-center gap-1 cursor-pointer hover:text-brand-600 transition-colors">
-                  <div className="w-8 h-1 bg-slate-300 rounded-full mb-1"></div>
-                </div>
+                <button
+                  onClick={() => setShowKeyboard(!showKeyboard)}
+                  className="flex flex-col items-center gap-1 cursor-pointer hover:text-brand-600 transition-colors"
+                  title="Open keyboard for custom text"
+                >
+                  <Keyboard className={`w-5 h-5 ${showKeyboard ? 'text-brand-600' : ''}`} />
+                  <span className="text-xs">Type</span>
+                </button>
               </div>
             </div>
+
+            {/* Pop-out Keyboard Overlay */}
+            {showKeyboard && (
+              <div className="absolute inset-0 bg-slate-900/95 flex flex-col justify-end">
+                <div className="bg-slate-50 p-4 rounded-t-3xl max-h-full overflow-y-auto">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-sm font-bold text-slate-800">Type Your Message</h3>
+                      {useCloudAI && (
+                        <span className="flex items-center gap-1 text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">
+                          <Sparkles className="w-3 h-3" />
+                          Cloud AI
+                        </span>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => {
+                        setShowKeyboard(false);
+                        setSuggestedChoices([]);
+                        setCustomText("");
+                      }}
+                      className="p-1 hover:bg-slate-200 rounded-full transition-colors"
+                    >
+                      <X className="w-5 h-5 text-slate-600" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-3">
+                    <textarea
+                      value={customText}
+                      onChange={(e) => setCustomText(e.target.value)}
+                      placeholder="Type what you want to say..."
+                      className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-brand-400 focus:outline-none resize-none text-slate-800"
+                      rows={3}
+                      autoFocus
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          handleSpeakCustomText();
+                        }
+                      }}
+                    />
+
+                    {/* Suggested Dialogue Choices */}
+                    {suggestedChoices.length > 0 && (
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2 text-xs text-slate-600">
+                          <span className="font-semibold">Suggested responses:</span>
+                          {isGeneratingSuggestions && <Loader2 className="w-3 h-3 animate-spin" />}
+                        </div>
+                        <div className="grid grid-cols-1 gap-2">
+                          {suggestedChoices.map((suggestion, idx) => (
+                            <button
+                              key={idx}
+                              onClick={() => {
+                                setCustomText(suggestion);
+                              }}
+                              className="text-left px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 hover:border-brand-400 hover:bg-brand-50 transition-colors"
+                            >
+                              {suggestion}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <button
+                      onClick={handleSpeakCustomText}
+                      disabled={!customText.trim() || ttsStatus === TTSStatus.LOADING || ttsStatus === TTSStatus.PLAYING}
+                      className="w-full bg-brand-500 hover:bg-brand-600 text-white font-semibold py-3 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    >
+                      <Volume2 className="w-5 h-5" />
+                      Speak
+                    </button>
+                  </div>
+
+                  <p className="text-xs text-slate-500 mt-3 text-center">
+                    {useCloudAI ? (
+                      <span className="text-purple-600 font-medium">Complex query detected - Using Cloud AI for intelligent suggestions</span>
+                    ) : (
+                      "For patients who cannot use voice input"
+                    )}
+                  </p>
+                </div>
+              </div>
+            )}
 
             {/* Speaker Mesh Visual */}
             <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1 opacity-20 pointer-events-none">

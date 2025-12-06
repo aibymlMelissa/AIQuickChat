@@ -46,8 +46,23 @@ const App: React.FC = () => {
           <p className="text-xl text-slate-600 mb-8 leading-relaxed">
             A hybrid edge-cloud AAC device designed for reliability and intelligence. Instant local speech generation meets cloud-based predictive AI.
           </p>
+
+          {/* Video Demo */}
+          <div className="mb-12 max-w-4xl mx-auto">
+            <div className="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-slate-200">
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-auto"
+              >
+                <source src="/Public/Video/AIQuickChart_2.mp4" type="video/mp4" />
+              </video>
+            </div>
+          </div>
         </div>
-        
+
         <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {[
             { 
@@ -122,16 +137,16 @@ const App: React.FC = () => {
                   ["SBC", "Raspberry Pi Zero 2 W (Quad-core 1GHz, 512MB RAM)"],
                   ["Display", "3.5\" DPI IPS Touchscreen (640x480)"],
                   ["Audio", "I2S Mono Amp HAT + 3W High-Fidelity Speaker"],
-                  ["OS", "DietPi Linux (Minimal footprint)"],
-                  ["App Runtime", "Python (Kivy/PyQt) with GPU Acceleration"],
+                  ["OS", "DietPi Linux (Minimal footprint)", true],
+                  ["App Runtime", "Python (Kivy/PyQt) with GPU Acceleration", true],
                   ["TTS Engine", "Piper (On-device Neural Text-to-Speech)"],
                   ["Connectivity", "Wi-Fi 2.4GHz (Sync Only), BLE"],
-                  ["Backend", "FastAPI + Supabase (PostgreSQL)"],
-                  ["AI Model", "Fine-tuned Llama 3 (Cloud) / N-gram (Local)"],
-                ].map(([comp, spec], i) => (
+                  ["Backend", "FastAPI + Supabase (PostgreSQL)", true],
+                  ["AI Model", "Fine-tuned Llama 3 (Cloud) / N-gram (Local)", true],
+                ].map(([comp, spec, blur], i) => (
                   <tr key={i} className="hover:bg-slate-700/50 transition-colors">
                     <td className="px-6 py-4 font-medium text-yellow-400">{comp}</td>
-                    <td className="px-6 py-4 text-yellow-200">{spec}</td>
+                    <td className={`px-6 py-4 text-yellow-200 ${blur ? 'filter blur-sm select-none' : ''}`}>{spec}</td>
                   </tr>
                 ))}
               </tbody>
